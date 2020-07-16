@@ -1,7 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
+import getValidationError from '../../utils/getValidationError';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -11,8 +13,12 @@ import { Container, Content, Background } from './styles';
 import logo from '../../assets/logo.svg';
 
 const SignIn: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+
   const handleSubimit = useCallback(async (data: object) => {
     try {
+      formRef.current?.setErrors({});
+
       const schema = Yup.object().shape({
         email: Yup.string()
           .email('Digite um e-mail válido.')
@@ -27,7 +33,9 @@ const SignIn: React.FC = () => {
         abortEarly: false,
       });
     } catch (err) {
-      console.log(err);
+      const errors = getValidationError(err);
+
+      formRef.current?.setErrors(errors);
     }
   }, []);
 
@@ -36,7 +44,7 @@ const SignIn: React.FC = () => {
       <Content>
         <img src={logo} alt="Logo" />
 
-        <Form onSubmit={handleSubimit}>
+        <Form ref={formRef} onSubmit={handleSubimit}>
           <h1>Faça seu logon</h1>
 
           <Input name="email" icon={FiMail} placeholder="E-mail" />
