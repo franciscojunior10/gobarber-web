@@ -15,7 +15,7 @@ import logo from '../../assets/logo.svg';
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubimit = useCallback(async (data: object) => {
+  const handleSubmit = useCallback(async (data: object) => {
     try {
       formRef.current?.setErrors({});
 
@@ -23,10 +23,7 @@ const SignIn: React.FC = () => {
         email: Yup.string()
           .email('Digite um e-mail válido.')
           .required('E-mail obrigátorio.'),
-        password: Yup.string().min(
-          6,
-          'Senha deve conter no mínino 6 caracteres.',
-        ),
+        password: Yup.string().min(6, 'No mínino 6 dígitos.'),
       });
 
       await schema.validate(data, {
@@ -44,7 +41,7 @@ const SignIn: React.FC = () => {
       <Content>
         <img src={logo} alt="Logo" />
 
-        <Form ref={formRef} onSubmit={handleSubimit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>Faça seu logon</h1>
 
           <Input name="email" icon={FiMail} placeholder="E-mail" />
